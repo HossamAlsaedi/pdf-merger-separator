@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/index.css">
+  <title>PDF Merger & Extractor</title>
+</head>
+
+
+
+<body>
+  <h1>دمج وتقسيم ملفات PDF</h1>
+
+  <!-- File Upload Section for Merging PDFs -->
+  <div id="mergeSection">
+    <h3>دمج ملفات PDF</h3>
+    <ul id="fileList">
+      <!-- Default file inputs -->
+      <li class="file-item">
+        <label>الملف 1</label>
+        <input type="file" class="fileInput" accept="application/pdf" />
+      </li>
+      <li class="file-item">
+        <label>الملف 2</label>
+        <input type="file" class="fileInput" accept="application/pdf" />
+      </li>
+    </ul>
+    <button id="addFileButton">اضافة ملف</button>
+    <button id="mergeButton" disabled>دمج الملفات</button>
+    <button id="downloadButton" disabled>تحميل الملف</button>
+  </div>
+  <div id="message" class="hidden"></div>
+  
+  <hr>
+
+<!-- Section for Extracting Pages -->
+<h2>استخراج الصفحات من ملف PDF</h2>
+<input type="file" id="extractFileInput" accept=".pdf">
+<div id="pageInfo" class="hidden">
+  <p>اجمالي الصفحات <span id="totalPages">0</span></p>
+  <label for="fromPage">من</label>
+  <input type="number" id="fromPage" min="1" />
+  <label for="toPage">الى</label>
+  <input type="number" id="toPage" min="1" />
+  <button id="confirmExtractButton">تحميل الملف</button>
+
+</div>
+
+<div id="pagePreviewContainer" class="page-preview-container hidden">
+  <!-- Page preview images will go here -->
+</div>
+
+<div id="message" class="message hidden"></div>
+
+<!-- Overlay for Image Preview -->
+<div id="overlay" class="page-overlay">
+  <button id="closeOverlay" class="close-button">X</button>
+  <img id="overlayImg" src="" alt="Preview">
+</div>
+
+</body>
+
+<script src="/js/pdf-lib.min.js"></script>
+<script type="module" src="js/pdf.min.mjs"></script>
+<script type="module" src="js/pdf.worker.min.mjs"></script>
+<script src="/js/index.js"></script>
+
+</html>
