@@ -41,7 +41,7 @@ function addFileInput() {
   li.classList.add('file-item');
   const fileIndex = fileList.children.length + 1; // Calculate file index
   li.innerHTML = `
-    <label>File ${fileIndex}:</label>
+    <label>الملف ${fileIndex}:</label>
     <input type="file" class="fileInput" accept="application/pdf" />
     <button class="remove-btn">X</button>
   `;
@@ -62,7 +62,7 @@ function addFileInput() {
 function updateFileLabels() {
   document.querySelectorAll('.file-item').forEach((li, index) => {
     const label = li.querySelector('label');
-    label.textContent = `File ${index + 1}:`;
+    label.textContent = `الملف ${index + 1}:`;
   });
 }
 
