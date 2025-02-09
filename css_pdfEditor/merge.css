@@ -1,0 +1,217 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.file-input-container {
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    transition: box-shadow 0.3s ease;
+    max-width: 80%;
+}
+
+.file-input-container:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.file-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.file-input {
+    width: 90% !important;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    transition: border-color 0.3s ease;
+}
+
+
+.file-input:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+.remove-file {
+    font-size: 1.2rem;
+    color: #ff4444;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.remove-file:hover {
+    color: #cc0000;
+}
+
+#add-more {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+#add-more:hover {
+    background-color: #218838;
+}
+
+#merge-button, #download-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+#merge-button:hover, #download-button:hover {
+    background-color: #0056b3;
+}
+
+#download-button {
+    display: none;
+    background-color: #28a745;
+}
+
+#page-count-container {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #555;
+    text-align: center;
+}
+
+.preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.pdf-preview , .preview-container img{
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.pdf-preview canvas , .preview-container img{
+    max-width: 150px;
+    max-height: 200px;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .file-input-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .file-input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .file-number {
+        margin-bottom: 10px;
+    }
+
+    .preview-container {
+        justify-content: center;
+    }
+}
+
+/* View Mode Styling */
+.view-mode {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%); /* Center the canvas */
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); /* Add a shadow effect */
+z-index: 1000; /* Ensure it is on top */
+cursor: pointer; /* Indicate that it's clickable */
+transition: transform 0.3s ease; /* Smooth scaling transition */
+max-width: 90%; /* Limit the size of the canvas */
+max-height: 90%; /* Limit the size of the canvas */
+overflow: hidden; /* Hide anything outside the canvas */
+background-color: #fff; /* White background to ensure visibility */
+}
+
+/* Add a background overlay behind the canvas */
+.view-mode::before {
+content: '';
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+z-index: -1; /* Ensure the overlay stays behind the canvas */
+}
+
+/* Close Button Styling */
+.close-view-mode {
+position: fixed;
+top: 20px;
+right: 20px;
+padding: 10px 20px;
+font-size: 16px;
+background-color: rgba(0, 0, 0, 0.7);
+color: white;
+border: none;
+cursor: pointer;
+z-index: 1001; /* Ensure it appears above the canvas */
+border-radius: 5px;
+}
+
+.close-view-mode:hover {
+background-color: rgba(0, 0, 0, 0.9); /* Darken on hover */
+}
+
+/* Optional: Styling for the enlarged canvas container */
+.pdf-preview {
+cursor: pointer; /* Make it clear it's clickable */
+}
+
+.bg-cover {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+z-index: 999; /* Behind the view-mode canvas but above other elements */
+display: none; /* Initially hidden */
+}

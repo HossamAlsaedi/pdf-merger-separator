@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>extract PDF</h2>
+<div class="file-input-container">
+  <input type="file" id="extractFileInput" />
+  <button id="clearFileButton" class="remove-btn" style="cursor: pointer;">X</button> <!-- 'X' icon -->
+</div>
+<div id="pageInfo" class="hidden">
+  <p>total pages<span id="totalPages">0</span></p>
+  <label for="fromPage">from</label>
+  <input type="number" id="fromPage" min="1" />
+  <label for="toPage">to</label>
+  <input type="number" id="toPage" min="1" />
+  <button id="confirmExtractButton">extract</button>
+
+</div>
+
+<div id="pagePreviewContainer" class="page-preview-container hidden">
+  <!-- Page preview images will go here -->
+</div>
+
+<div id="message" class="message hidden"></div>
+
+<!-- Overlay for Image Preview -->
+<div id="overlay" class="page-overlay">
+  <button id="closeOverlay" class="close-button">X</button>
+  <img id="overlayImg" src="" alt="Preview">
+</div>
+</body>
+</html>

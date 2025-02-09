@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css_pdfEditor/merge.css">
+  <title>PDF Tools</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #444;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #eee;
+      border-bottom: 3px solid transparent;
+      transition: background-color 0.3s, border-bottom 0.3s;
+    }
+
+    .tab.active {
+      background-color: #fff;
+      border-bottom: 3px solid #007BFF;
+      font-weight: bold;
+    }
+
+    .form-section {
+      display: none;
+      padding: 20px;
+      margin: 20px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+    }
+
+
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .page-overlay img {
+  max-width: 90%;
+  max-height: 90%;
+}
+  </style>
+</head>
+<body>
+
+    <div class="bg-cover" style="display: none;"></div>
+
+
+<h1>PDF Tools</h1>
+
+<div class="tabs">
+  <div class="tab active" data-tab="merge">Merge PDFs</div>
+  <div class="tab" data-tab="extract">Extract Pages</div>
+  <div class="tab" data-tab="Rearrange">Rearrange PDF</div>
+</div>
+
+<!-- ------------------------------------- merge -------------------------------------- -->
+<div id="merge" class="form-section active">
+    <h2>Merge PDFs</h2>
+    <div id="file-inputs-container">
+    <!-- Initial file input fields will be added here -->
+</div>
+
+<button id="add-more">Add More Files</button>
+<button id="merge-button">Merge PDFs</button>
+<button id="download-button" style="display: none;">Download Merged PDF</button>
+
+<div id="page-count-container" class="page-count">
+    <!-- Total page count of merged PDF will be displayed here -->
+</div>
+
+<div id="preview-container" class="preview-container">
+    <!-- PDF pages will be displayed here -->
+</div>
+</div>
+
+<!-- ------------------------------------- extract -------------------------------------- -->
+
+<div id="extract" class="form-section">
+    <h2>Extract PDF</h2>
+    <div class="file-input-container">
+      <label for="extractFileInput">Select File:</label>
+      <input type="file" id="extractFileInput"/>
+      <button id="clearFileButton" class="remove-btn" style="cursor: pointer;">X</button> <!-- 'X' icon -->
+    </div>
+    <div id="pageInfo" class="hidden">
+      <p>total pages<span id="totalPages">0</span></p>
+      <label for="fromPage">from</label>
+      <input type="number" id="fromPage" min="1" />
+      <label for="toPage">to</label>
+      <input type="number" id="toPage" min="1" />
+      <button id="confirmExtractButton">download</button>
+    
+    </div>
+    
+    <div id="extractPagePreviewContainer" class="preview-container hidden">
+      <!-- Page preview images will go here -->
+    </div>
+    
+</div>
+
+<!-- ------------------------------------- rearrange -------------------------------------- -->
+<div id="Rearrange" class="form-section">
+    <h2>Rearrange PDF</h2>
+    <div class="file-input-container">
+        <label for="Rearrange-file">Select File:</label>
+        <input type="file" id="Rearrange-file">
+    </div>
+    <button id="Rearrange-button">Rearrange PDF</button>
+
+    <div id="rearrangePageContainer" class="preview-container hidden">
+      <!-- Page preview images will go here -->
+    </div>
+</div>
+
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const sections = document.querySelectorAll('.form-section');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active classes
+      tabs.forEach(t => t.classList.remove('active'));
+      sections.forEach(section => section.classList.remove('active'));
+
+      // Activate clicked tab and corresponding section
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+
+<script src="../javaScript/pdf-lib.min.js"></script>
+<script type="module" src="../javaScript/pdf.min.mjs"></script>
+<script type="module" src="../javaScript/pdf.worker.min.mjs"></script>
+<script src="/js_pdfEditor/merge.js"></script>
+<script src="/js_pdfEditor/extract.js"></script>
+<script src="/js_pdfEditor/rearrange.js"></script>
+
+</body>
+</html>

@@ -132,6 +132,10 @@ button:hover {
   margin: 5px;
 }
 
+.page-preview.dragging {
+  opacity: 0.5;
+}
+
 .page-overlay {
   position: fixed;
   top: 0;

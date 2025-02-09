@@ -241,25 +241,6 @@ async function generatePagePreviews() {
     imgElement.dataset.page = i + 1;  // Store page number
     imgElement.addEventListener('click', () => openPreview(i)); // Open page preview on click
 
-    // // Create a select input for page number
-    // const pageNumberInput = document.createElement('select');
-    // pageNumberInput.dataset.page = i + 1;
-
-    // Populate select options with page numbers
-    // for (let j = 1; j <= totalPages; j++) {
-    //   const option = document.createElement('option');
-    //   option.value = j;
-    //   option.textContent = j;
-    //   if (j === i + 1) option.selected = true;  // Mark current page
-    //   pageNumberInput.appendChild(option);
-    // }
-
-    // Add event listener for page number change
-    // pageNumberInput.addEventListener('change', (event) => {
-    //   const newPageNumber = parseInt(event.target.value);
-    //   updatePageNumber(i, newPageNumber);  // Update page number after change
-    // });
-
     // Add the image and select elements to the page preview
     const pagePreview = document.createElement('div');
     pagePreview.classList.add('page-preview');
@@ -270,6 +251,8 @@ async function generatePagePreviews() {
   }
 
   previewContainer.classList.remove('hidden');
+  enableDragAndDrop();
+
 }
 
 // Function to update page numbers after drag and drop changes
@@ -292,21 +275,7 @@ function updatePageNumber(oldIndex, newPageNumber) {
   } else {
     previewContainer.appendChild(draggedPreview);
   }
-
-  // Update all page numbers after reordering
-  updateAllPageNumbers();
 }
-
-
-// Function to update all page numbers after changes
-// function updateAllPageNumbers() {
-//   const previewDivs = document.querySelectorAll('.page-preview');
-//   previewDivs.forEach((div, index) => {
-//     const pageNumberInput = div.querySelector('select');
-//     pageNumberInput.value = index + 1;  // Correct the page number for the new order
-//   });
-// }
-
 
 // Function to update preview based on selected page range
 function updatePreviewBasedOnRange() {
@@ -321,15 +290,6 @@ function updatePreviewBasedOnRange() {
   for (let i = fromPage - 1; i < toPage; i++) {
     if (previewDivs[i]) previewDivs[i].style.display = 'block';
   }
-
-  // Update page number inputs based on range
-  // updateAllPageNumbers();  // Ensure number update after hiding/unhiding
-
-  // Disable page selectors outside of the visible range
-  const pageNumberInputs = document.querySelectorAll('.page-preview select');
-  pageNumberInputs.forEach((input, index) => {
-    input.disabled = (index < fromPage - 1 || index >= toPage);
-  });
 }
 
 
@@ -357,6 +317,8 @@ async function saveExtractedPdf(extractedPdf, fileName) {
   showMessage('تمت عملية استخراج وحفظ الملف بنجاح !', 'success');  // Show success message
 }
 
+
+
 // Event listeners for extracting pages, file input, and page range updates
 confirmExtractButton.addEventListener('click', async () => {
   const fromPage = parseInt(fromPageInput.value);
@@ -371,6 +333,9 @@ confirmExtractButton.addEventListener('click', async () => {
 });
 
 
+// Get references to the file input and clear button
+const clearFileButton = document.getElementById('clearFileButton');
+
 extractFileInput.addEventListener('change', async () => {
   const file = extractFileInput.files[0];
   if (file) {
@@ -378,6 +343,27 @@ extractFileInput.addEventListener('change', async () => {
     await loadPdfWithLib(file);  // Load PDF for extraction
   }
 });
+
+// Clear the file input when the "X" button is clicked
+clearFileButton.addEventListener('click', () => {
+  extractFileInput.value = '';  // Clear the file input
+  clearPdfState();  // Optionally, clear any PDF-related state or UI updates
+
+  // Optionally, hide or reset any PDF display elements
+  totalPagesSpan.textContent = '';  // Reset total pages display
+  pageInfo.classList.add('hidden');  // Hide page info if needed
+});
+
+// Optional function to clear PDF state (e.g., reset variables)
+function clearPdfState() {
+  // Reset any variables or UI related to the previous PDF (e.g., reset page previews)
+  pdfDoc = null;
+  pdfLibDoc = null;
+  totalPages = 0;
+  previewContainer.innerHTML = ``;
+  // Add any other necessary resets for your specific case
+}
+
 
 fromPageInput.addEventListener('input', updatePreviewBasedOnRange);
 toPageInput.addEventListener('input', updatePreviewBasedOnRange);
@@ -413,6 +399,82 @@ function toggleViewMode(mode) {
     previewContainer.classList.add('grid-view');
   }
 }
+
+// Enable Drag-and-Drop for Rearranging Pages// Enable Drag-and-Drop for Rearranging Pages
+function enableDragAndDrop() {
+  const previewContainer = document.querySelector('#pagePreviewContainer'); // Ensure this matches your container's selector
+  const previews = document.querySelectorAll('.page-preview');
+
+  previews.forEach((preview, index) => {
+    preview.setAttribute('draggable', true);
+    preview.dataset.index = index; // Track the original index
+
+    // Drag start
+    preview.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', index);
+      preview.classList.add('dragging');
+    });
+
+    // Drag end
+    preview.addEventListener('dragend', () => {
+      preview.classList.remove('dragging');
+    });
+  });
+
+  // Drag over
+  previewContainer.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const draggingElement = document.querySelector('.dragging');
+    const previewsArray = Array.from(previewContainer.children);
+
+    // Find the element to insert before
+    const afterElement = previewsArray.find((child) => {
+      const rect = child.getBoundingClientRect();
+      const offset = e.clientX - rect.left + (e.clientY - rect.top) * 0.5; // Adjusts for both x and y axes
+      return offset < child.offsetWidth / 2; // Change 2 to smaller/larger values to adjust sensitivity
+    });
+
+    if (afterElement && afterElement !== draggingElement) {
+      previewContainer.insertBefore(draggingElement, afterElement);
+    } else if (!afterElement) {
+      previewContainer.appendChild(draggingElement);
+    }
+  });
+}
+
+// Function to Generate PDF Based on Rearranged Pages
+async function rearrangeAndDownloadPages(pdfLibDoc) {
+  const previewContainer = document.querySelector('#pagePreviewContainer'); // Ensure this matches your container's selector
+  const reorderedIndices = Array.from(previewContainer.children).map(
+    (child) => parseInt(child.dataset.index)
+  );
+
+  const rearrangedPdf = await PDFLib.PDFDocument.create();
+  const rearrangedPages = await rearrangedPdf.copyPages(pdfLibDoc, reorderedIndices);
+  rearrangedPages.forEach((page) => rearrangedPdf.addPage(page));
+
+  const pdfBytes = await rearrangedPdf.save();
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
+  link.download = 'rearranged-pages.pdf';
+  link.click();
+}
+
+// Add Rearrange Button Event Listener
+const rearrangeButton = document.querySelector('#rearrangeButton'); // Update the selector as per your HTML
+rearrangeButton.addEventListener('click', async () => {
+  // Get the file input (assuming you have an input element for file selection)
+  const file = extractFileInput.files[0]; // or any file source you are using
+  if (file) {
+    await loadPdfWithLib(file);  // Use PDFLib loading function
+    await rearrangeAndDownloadPages(pdfLibDoc);  // Proceed with rearranging the pages
+  } else {
+    showMessage('يرجى تحديد ملف PDF أولاً.', 'error');  // Show error if no file is selected
+  }
+});
+
+// Initialize Drag-and-Drop
+enableDragAndDrop();
 
 
 
